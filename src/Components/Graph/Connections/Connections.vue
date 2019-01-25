@@ -53,7 +53,7 @@ export default {
         },
         connections() {
             return _.chain(this.inputs)
-                .omitBy(({output}) => _.isNil(output))
+                .omitBy(({output}) => _.isNil(output) || _.isNil(this.outputs[output.id]))
                 .map(({rect, output}, inputId) => {
                     const outputPos = this.outputs[output.id];
                     return {

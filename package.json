@@ -38,7 +38,7 @@
     "webpack-dev-server": "^3.1.14"
   },
   "dependencies": {
-    "graphfx": "^0.0.2",
+    "graphfx": "^0.0.3",
     "interactjs": "^1.3.4",
     "lodash": "^4.17.11",
     "vue": "^2.5.21"

@@ -81,7 +81,6 @@ export default {
             this.tryConnectIO();
         },
         graph: {
-            deep: true,
             handler() {
                 this.drawConnections();
             }
@@ -94,7 +93,6 @@ export default {
         },
         showContextMenu(event) {
             event.preventDefault();
-            console.log(event);
             const {offsetX, offsetY} = event;
             if (this.selectedOutput || this.selectedInput) {
                 this.selectedOutput = null;
@@ -113,12 +111,14 @@ export default {
             const y = (1/this.scaleContext.scale) * (clientY - this.$el.offsetTop - this.scaleContext.offset.y);
             node.x = x;
             node.y = y;
+            this.drawConnections();
         },
         tryConnectIO() {
             if (this.selectedInput && this.selectedOutput) {
                 this.selectedInput.connect(this.selectedOutput);
                 this.selectedInput = null;
                 this.selectedOutput = null;
+                this.drawConnections();
             }
         },
         drawConnections() {
@@ -142,8 +142,8 @@ export default {
         },
         removeNode(nodeToRemove) {
             const index = this.graph.nodes.findIndex(({node}) => node === nodeToRemove);
-            console.log('nodeIndex', index);
             this.graph.nodes.splice(index, 1);
+            this.$nextTick(this.drawConnections);
         },
         updateDimensions() {
             this.boundingBox = this.$el.getBoundingClientRect();

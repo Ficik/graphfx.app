@@ -37,7 +37,6 @@ export default {
     },
     methods: {
         onChange($event) {
-            console.log('change', $event);
             this.value = $event.target.value;
         }
     }

@@ -32,9 +32,6 @@ export default {
         return {
             isRunning: true,
             isPreviewVisible: false,
-            /*redrawThumb: _.throttle(() => {
-                console.log('redrawThum')
-            }, 500, {leading: true, trailing: true}),*/
             redrawThumb: _.throttle(() => this.redrawCanvas(this.$refs.thumb), 500, {leading: true, trailing: true}),
         };
     },
@@ -130,8 +127,6 @@ export default {
                 a.download = 'sample.png';
                 a.click();
             });
-
-            console.log('download');
         }
     }
 }

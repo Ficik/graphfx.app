@@ -5,7 +5,6 @@
 
 export const getStream = (callback) => {
     navigator.getUserMedia({video: true}, (stream) => {
-        console.log(stream)
         /** @type {HTMLVideoElement} */
         const video = document.getElementById('Input');
         video.srcObject = stream;

@@ -160,6 +160,10 @@ export default {
     padding-left: 4px;
 }
 
+.node-var--output {
+    flex-direction: row-reverse;
+}
+
 .node-var__target {
     content: '';
     position: absolute;

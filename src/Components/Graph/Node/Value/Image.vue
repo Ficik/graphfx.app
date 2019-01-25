@@ -139,6 +139,7 @@ export default {
 <style>
 .image-value {
     position: relative;
+    text-align: center;
 }
 .image-value__thumb, .image-value__preview {
     background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAAJ0lEQVQoU2NsaGj4z4AG6uvr0YUYGIeCwv///2N4prGxEdMzQ0AhAChTL3KV95+lAAAAAElFTkSuQmCC);
@@ -149,12 +150,11 @@ export default {
     width: 50px;
     height: 50px;
     object-fit: contain;
-
-    box-shadow: 0 0 6px;
+    border: 2px solid black;
 }
 
 .image-value__preview {
-    display: none;
+    display: block;
     position: absolute;
     top: 0;
     left: 0;
@@ -165,9 +165,11 @@ export default {
     pointer-events: none;
     z-index: 1;
     transform: translate(-50%, -50%);
+    opacity: 0;
+    transition: opacity 120ms;
 }
 
 .image-value__thumb:hover ~ .image-value__preview {
-    display: block;
+    opacity: 1;
 }
 </style>

@@ -9,6 +9,7 @@ html, body {
 
 * {
     box-sizing: border-box;
+    outline-color: var(--primary-color);
 }
 
 :root {

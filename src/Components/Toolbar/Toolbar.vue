@@ -90,7 +90,7 @@ export default {
         onExport() {
             const data = JSON.stringify(this.graph.serialize(), null, 2);
             const file = new Blob([data], {type: 'application/json'});
-            downloadBlob(file);
+            downloadBlob(file, `${this.selectedSaveSlot}.json`);
         }
     }
 }

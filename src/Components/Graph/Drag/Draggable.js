@@ -2,6 +2,12 @@ import interact from 'interactjs';
 
 export default {
   abstract: true,
+  props: {
+    handle: {
+      type: String,
+      default: undefined,
+    },
+  },
   render() {
     try {
       return this.$slots.default[0];
@@ -15,6 +21,7 @@ export default {
     this.$nextTick(() => {
       interact(el)
       .draggable({
+        allowFrom: this.handle,
         onmove: (event) => {
           this.$emit('move', event);
         }

@@ -12,7 +12,7 @@
 </template>
 <script>
 import Toolbar from './Toolbar';
-import Graph from './Graph.vue';
+import Graph from './Graph';
 
 export default {
     components: {
@@ -37,8 +37,17 @@ export default {
     font-size: 12px;
 }
 
+.app__scene {
+    z-index: 1;
+}
+
 .app__toolbar {
     padding: 10px;
     text-align: right;
+    z-index: 2;
+    position: fixed;
+    left: 0;
+    top: 0;
+    right: 0;
 }
 </style>

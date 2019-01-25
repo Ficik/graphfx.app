@@ -35,6 +35,13 @@
         >
             Export
         </button>
+        <div class="toolbar__divider"></div>
+        <button
+            class="toolbar__item toolbar__item--btn"
+            @click="togglePreview"
+        >
+            {{ $store.isPreviewEnabled ? 'Pause preview' : 'Resume preview' }}
+        </button>
     </div>
 </template>
 <script>
@@ -91,6 +98,9 @@ export default {
             const data = JSON.stringify(this.graph.serialize(), null, 2);
             const file = new Blob([data], {type: 'application/json'});
             downloadBlob(file, `${this.selectedSaveSlot}.json`);
+        },
+        togglePreview() {
+            this.$store.isPreviewEnabled = !this.$store.isPreviewEnabled;
         }
     }
 }
@@ -126,5 +136,9 @@ export default {
     font-weight: bold;
     text-decoration: none;
     padding: 4px 6px;
+}
+
+.toolbar__divider {
+    flex: 1;
 }
 </style>

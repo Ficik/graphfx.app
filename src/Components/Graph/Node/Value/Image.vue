@@ -84,7 +84,9 @@ export default {
         },
         redraw() {
             if (this.isRunning) {
-                this.redrawThumb();
+                if (this.$store.isPreviewEnabled) {
+                    this.redrawThumb();
+                }
                 // this.redrawCanvas(this.$refs.thumb);
                 if (this.isPreviewVisible) {
                     this.redrawCanvas(this.$refs.preview)

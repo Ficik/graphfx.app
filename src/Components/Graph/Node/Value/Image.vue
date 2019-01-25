@@ -60,6 +60,9 @@ export default {
         }
     },
     methods: {
+        beforeDestroy() {
+            this.io.offchange(this.onChange);
+        },
         onChange() {
             this.redraw();
         },

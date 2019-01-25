@@ -21,6 +21,9 @@ graphInput.onchange = (event) => {
     const fr = new FileReader();
     const file = graphInput.files[0];
     fr.onload = () => {
+        if (graph) {
+            graph.destroy();
+        }
         graph = Graph.deserialize(JSON.parse(fr.result));
     }
     fr.readAsText(file);

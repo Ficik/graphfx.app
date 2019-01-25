@@ -12,9 +12,10 @@
                 :outputs="outputPositions"
 
             />
+
             <Draggable
-                v-for="(node, index) in graph.nodes"
-                :key="index"
+                v-for="node in graph.nodes"
+                :key="`drag-${node.node.uid}`"
                 handle=".node__title"
                 @move="updateNodePosition(node, $event)"
             >
@@ -22,6 +23,7 @@
                     class="graph__node"
                     :style="{transform: `translate(${node.x}px, ${node.y}px)`}"
                     :node="node.node"
+                    :key="node.node.uid"
                     ref="node"
                     :selectedInput="selectedInput"
                     :selectedOutput="selectedOutput"
@@ -82,7 +84,7 @@ export default {
         },
         graph: {
             handler() {
-                this.drawConnections();
+                this.$nextTick(this.updateDimensions);
             }
         }
     },
@@ -159,11 +161,6 @@ export default {
                 }))
         },
     },
-    mounted() {
-        this.$nextTick(() => {
-            this.updateDimensions();
-        })
-    }
 }
 </script>
 <style>

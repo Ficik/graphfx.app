@@ -24,6 +24,13 @@ export default {
             graph: {nodes: []},
         }
     },
+    watch: {
+        graph(newVal, oldVal) {
+            if (oldVal.destroy) {
+                oldVal.destroy();
+            }
+        }
+    }
 };
 </script>
 <style>

@@ -1,5 +1,6 @@
 <template>
     <input
+        class="string-input"
         v-model="value"
         :type="
             type === 'Number' ? 'number' :
@@ -42,3 +43,13 @@ export default {
     }
 }
 </script>
+<style>
+.string-input {
+    background-color: rgba(0,0,0,0.8);
+    border: none;
+    color: white;
+    padding: 2px 4px;
+    border-radius: 5px;
+}
+
+</style>

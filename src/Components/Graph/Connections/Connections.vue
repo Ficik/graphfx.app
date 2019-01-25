@@ -59,9 +59,9 @@ export default {
                     return {
                         inputId,
                         x1: rect.left,
-                        y1: rect.top,
+                        y1: rect.top + rect.height / 2,
                         x2: outputPos.rect.right,
-                        y2: outputPos.rect.top,
+                        y2: outputPos.rect.top + outputPos.rect.height / 2,
                     };
                 })
                 .value();

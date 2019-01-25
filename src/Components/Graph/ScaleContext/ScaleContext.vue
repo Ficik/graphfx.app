@@ -52,7 +52,7 @@ export default {
         },
         onWheel(event) {
             console.log(event);
-            this.scale += Math.sign(event.wheelDelta) * 0.1;
+            this.scale = Math.max(0.2, this.scale + Math.sign(event.wheelDelta) * 0.1);
             this.$nextTick(this.emitChange);
         },
         onDragStart(event) {

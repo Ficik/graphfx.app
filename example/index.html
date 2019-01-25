@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>UI</title>
+    <style>
+        #outputs {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+        }
+        #outputs canvas {
+            max-width: 100%;
+        }
+    </style>
+</head>
+<body>
+    <div>
+        <label>Graph (input labeled 'camera' and output/s labeled `photo_X`)</label><br>
+        <input type="file" id="graph">
+    </div>
+
+    <div>
+        <label>inputImage</label><br>
+        <input type="file" id="input">
+        <img id="inputImage" style="width: 200px">
+    </div>
+    <button id="runButton">
+        Run
+    </button>
+    <div id="outputs"></div>
+
+</body>
+</html>

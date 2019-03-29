@@ -4,9 +4,9 @@
             @change="onContextChange"
             @click="showContextMenu"
             @contextmenu="showContextMenu"
+            :transform.sync="transform"
         >
             <Connections
-                slot="scale-only"
                 class="graph__connections"
                 :inputs="inputPositions"
                 :outputs="outputPositions"
@@ -73,6 +73,7 @@ export default {
             inputPositions: null,
             outputPositions: null,
             scaleContext: {offset: {x: 0, y: 0}, scale: 1},
+            transform: null,
         }
     },
     watch: {
@@ -94,7 +95,7 @@ export default {
             this.updateDimensions();
         },
         showContextMenu(event) {
-            event.preventDefault();
+            const {x, y} = event;
             const {offsetX, offsetY} = event;
             if (this.selectedOutput || this.selectedInput) {
                 this.selectedOutput = null;
@@ -102,15 +103,11 @@ export default {
             } else if (this.contextMenuPosition) {
                 this.contextMenuPosition = null;
             } else {
-                this.contextMenuPosition = {
-                    x: (1/this.scaleContext.scale) * (offsetX - this.scaleContext.offset.x),
-                    y: (1/this.scaleContext.scale) * (offsetY - this.scaleContext.offset.y),
-                };
+                this.contextMenuPosition = {x, y};
             }
         },
-        updateNodePosition(node, {clientX, clientY, x0, y0}) {
-            const x = (1/this.scaleContext.scale) * (clientX - this.$el.offsetLeft - this.scaleContext.offset.x);
-            const y = (1/this.scaleContext.scale) * (clientY - this.$el.offsetTop - this.scaleContext.offset.y);
+        updateNodePosition(node, event) {
+            const {x, y} = this.transform(event);
             node.x = x;
             node.y = y;
             this.drawConnections();
@@ -127,10 +124,24 @@ export default {
             try {
                 const flattenObjectArray = (ary) =>
                     ary.reduce((acc, nxt) => Object.assign(acc, nxt), {});
+
                 this.inputPositions = flattenObjectArray(this.$refs.node
-                    .map((vm) => vm.inputPositions()));
+                    .map((vm) => {
+                        const pos = vm.inputPositions();
+                        for (let id of Object.keys(pos)) {
+                            pos[id].rect = this.transform(pos[id].rect);
+                        }
+                        return pos;
+                    }))
+
                 this.outputPositions = flattenObjectArray(this.$refs.node
-                    .map((vm) => vm.outputPositions()));
+                    .map((vm) => {
+                        const pos = vm.outputPositions();
+                        for (let id of Object.keys(pos)) {
+                            pos[id].rect = this.transform(pos[id].rect);
+                        }
+                        return pos;
+                    }));
             } catch (err) {
                 console.warn('drawConnection', err);
             }

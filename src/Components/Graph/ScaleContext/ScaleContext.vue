@@ -1,28 +1,24 @@
 <template>
     <div
-        :class="{'scale-context--dragged': dragStartPos}"
-        class="scale-context"
+        class="scene"
     >
         <div
-            class="scale-context__active-area"
-            @wheel="onWheel"
-            @click="$emit('click', $event)"
-            @contextmenu="$emit('contextmenu', $event)"
+            class="scene__backdrop"
+            @wheel="onMouseWheel"
             @mousemove="onMouseMove"
             @dragstart="onDragStart"
-            @mouseup="onDragEnd"
+            @mouseup="onMouseUp"
+            @mousedown="onMouseDown"
             draggable
         >
-
-        </div>
-        <div>
-            <slot name="scale-only"></slot>
         </div>
         <div
             :style="{
-                transformOrigin: 'top left',
-                transform: transform,
+                '--offsetX': offset.x,
+                '--offsetY': offset.y,
+                '--scale': scale,
             }"
+            class="scene__content"
         >
             <slot></slot>
         </div>
@@ -33,69 +29,158 @@
 export default {
     data() {
         return {
-            scale: 1,
-            dragStartPos: null,
-            dragOffset: {x: 0, y: 0},
-        }
+            dragStartPosition: null,
+            dragStartOffset: null,
+            dataOffset: {
+                x: 0,
+                y: 0,
+            },
+            dataScale: 1,
+            mouseDown: false,
+        };
     },
     computed: {
-        transform() {
-            return `translate(${this.dragOffset.x}px, ${this.dragOffset.y}px) scale(${this.scale})`;
-        }
-    },
-    methods: {
-        emitChange() {
-            this.$emit('change', {
-                    scale: this.scale,
-                    offset: this.dragOffset,
-                });
+        scale: {
+            set(val) {
+                this.dataScale = val;
+                this.updateTransform();
+            },
+            get() {
+                return this.dataScale;
+            },
         },
-        onWheel(event) {
-            this.scale = Math.max(0.2, this.scale + Math.sign(event.wheelDelta) * 0.1);
-            this.$nextTick(this.emitChange);
-        },
-        onDragStart(event) {
-            event.preventDefault();
-            this.dragStartPos = {
-                x: event.clientX - this.dragOffset.x,
-                y: event.clientY - this.dragOffset.y,
-            }
-        },
-        onDragEnd(event) {
-            this.dragStartPos = null;
-        },
-        onMouseMove(event) {
-            if (this.dragStartPos) {
-                this.dragOffset = {
-                    x: event.clientX - this.dragStartPos.x,
-                    y: event.clientY - this.dragStartPos.y,
-                }
-                this.$nextTick(this.emitChange);
+        offset: {
+            set(val) {
+                this.dataOffset = val;
+                this.updateTransform();
+            },
+            get() {
+                return this.dataOffset;
             }
         },
     },
     mounted() {
-        // this.$el.addEventListener('wheel', this.onWheel);
+        this.updateTransform();
+    },
+    methods: {
+        updateTransform() {
+            this.$emit('update:transform', (event) => {
+                if (!event) {
+                    return event;
+                }
+                if (event.clientX !== undefined && event.clientY !== undefined) {
+                    const {trueX, trueY} = this.eventRelativePosition(event);
+                    return {x: trueX, y: trueY};
+                } else {
+                    const {left, top} = this.$el.getBoundingClientRect()
+                    return {
+                        left: ((event.left - left) / this.scale) - this.offset.x,
+                        right: ((event.right - left) / this.scale) - this.offset.x,
+                        top: ((event.top - top) / this.scale) - this.offset.y,
+                        bottom: ((event.bottom - top) / this.scale) - this.offset.y,
+                        width:  event.width / this.scale,
+                        height: event.height / this.scale,
+                    }
+                }
+            });
+        },
+        /**
+         * @param {MouseEvent} event
+         */
+        eventRelativePosition(event) {
+            const {clientX, clientY}  = event;
+            const {left, top} = this.$el.getBoundingClientRect()
+            return {
+                x: clientX - left,
+                y: clientY - top,
+                trueX: ((clientX - left) / this.scale) - this.offset.x,
+                trueY: ((clientY - top) / this.scale) - this.offset.y,
+            };
+        },
+        onMouseWheel(event) {
+            const {x, y} = this.eventRelativePosition(event);
+            const oldVal = this.scale;
+            const newVal = Math.max(0.2, this.scale + Math.sign(event.wheelDelta) * 0.08);
+            this.scale = newVal;
+
+            const compensate = {
+                x: (x / newVal) - (x / oldVal),
+                y: (y / newVal) - (y / oldVal),
+            }
+
+            this.offset = {
+                x: this.offset.x + compensate.x,
+                y: this.offset.y + compensate.y,
+            }
+        },
+        onMouseMove(event) {
+            if (this.dragStartPosition) {
+                const {x, y} = this.eventRelativePosition(event);
+                const dragDiff = {
+                    x: this.dragStartOffset.x + (x - this.dragStartPosition.x) / this.scale,
+                    y: this.dragStartOffset.y + (y - this.dragStartPosition.y) / this.scale,
+                }
+                this.offset = dragDiff;
+            }
+
+        },
+        onDragStart(event) {
+            event.preventDefault();
+
+            // save current offset
+            this.dragStartOffset = {
+                x: this.offset.x,
+                y: this.offset.y,
+            }
+            // save start of dragging
+            this.dragStartPosition = this.eventRelativePosition(event);
+        },
+        onMouseDown(event) {
+            this.mouseDown = true;
+        },
+        onMouseUp(event) {
+            if (this.dragStartOffset) {
+                this.dragStartOffset = null;
+                this.dragStartPosition = null;
+            } else if (this.mouseDown) {
+                this.emitClick(event);
+            }
+            this.mouseDown = false;
+        },
+        emitClick(event) {
+            const {trueX, trueY} = this.eventRelativePosition(event);
+            this.$emit('click', {
+                x: trueX,
+                y: trueY,
+            });
+        }
     }
 }
 </script>
 <style>
-.scale-context {
-    position: relative;
-}
-.scale-context--dragged {
-    cursor: move;
+.scene {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
 }
 
-.scale-context__active-area {
-    position: fixed;
+.scene__backdrop {
+    position: absolute;
     left: 0;
     top: 0;
-    bottom: 0;
-    right: 0;
+    width: 100%;
+    height: 100%;
+    cursor: grab;
 }
-
-.scale-context--dragged .scale-context__active-area {
-    z-index: 100;
+.scene__content {
+    --offsetXPx: calc(var(--offsetX) * 1px);
+    --offsetYPx: calc(var(--offsetY) * 1px);
+    position: relative;
+    transform-origin: left top;
+    transform:
+      scale(var(--scale))
+      translate(var(--offsetXPx), var(--offsetYPx))
+    ;
 }
 </style>

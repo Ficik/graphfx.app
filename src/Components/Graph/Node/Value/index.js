@@ -20,6 +20,7 @@ export default {
             this.io.type === 'String' ? StringValue :
             this.io.type === 'Number' ? StringValue :
             this.io.type === 'Color' ? StringValue :
+            this.io.type === 'Boolean' ? StringValue :
             null,
         {
             props: {

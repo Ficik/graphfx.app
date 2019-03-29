@@ -60,14 +60,12 @@ export default {
         }
     },
     methods: {
-        beforeDestroy() {
-            this.io.offchange(this.onChange);
-        },
         onChange() {
             this.redraw();
         },
         redrawCanvas(canvas) {
             const value = this.io.value;
+            if (!canvas) return;
             /** @type {HTMLCanvasElement} */
             const ctx = canvas.getContext('2d');
             if (!value) {

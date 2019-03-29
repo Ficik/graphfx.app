@@ -5,6 +5,7 @@
         :type="
             type === 'Number' ? 'number' :
             type === 'Color' ? 'color' :
+            type === 'Boolean' ? 'checkbox' :
             'text'
         "
     >

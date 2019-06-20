@@ -1,6 +1,7 @@
 import StringValue from './String.vue';
 import ImageValue from './Image.vue';
 import SelectValue from './Select.vue';
+import FontValue from './Font.vue';
 
 export default {
     props: {
@@ -21,6 +22,7 @@ export default {
             this.io.type === 'Number' ? StringValue :
             this.io.type === 'Color' ? StringValue :
             this.io.type === 'Boolean' ? StringValue :
+            this.io.type === 'Font' ? FontValue :
             null,
         {
             props: {

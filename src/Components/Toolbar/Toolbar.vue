@@ -83,15 +83,15 @@ export default {
         this.onLoad();
     },
     methods: {
-        onLoad() {
-            this.$emit('update:graph', load(this.selectedSaveSlot));
+        async onLoad() {
+            this.$emit('update:graph', await load(this.selectedSaveSlot));
         },
         onSave() {
             save(this.selectedSaveSlot, this.graph);
         },
         async onImport() {
             const definition = JSON.parse(await loadFile('readAsText', 'application/json'));
-            const graph = Graph.deserialize(definition);
+            const graph = await Graph.deserialize(definition);
             this.$emit('update:graph', graph);
         },
         onExport() {

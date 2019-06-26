@@ -12,11 +12,11 @@ export const listSaves = () => {
     return slots.map((key) => key.match(regex)[1]);
 }
 
-export const load = (name) => {
+export const load = async (name) => {
   try {
-    return Graph.deserialize(JSON.parse(localStorage.getItem(toSaveSlotKey(name))) || []);
+    return await Graph.deserialize(JSON.parse(localStorage.getItem(toSaveSlotKey(name))) || []);
   } catch (err) {
-    return Graph.deserialize([]);
+    return await Graph.deserialize([]);
   }
 };
 export const save = (name, graph) => localStorage.setItem(toSaveSlotKey(name), JSON.stringify(graph.serialize()));

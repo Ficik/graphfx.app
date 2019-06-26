@@ -57,11 +57,17 @@ export default {
           if (file) {
             const dataUrl = await loadBlobAsDataUrl(file);
             const name = uuidv4();
+            const fontface = new FontFace(name, url);
+            await fontface.load();
+            if (!document.fonts.has(fontface)) {
+                await document.fonts.add(fontface)
+            }
             const url = `url(${dataUrl})`;
             this.io.value = {
+              type: 'font',
               name,
               url,
-              fontface: new FontFace(name, url),
+              fontface,
             };
           }
         }

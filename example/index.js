@@ -20,11 +20,11 @@ const runButton = document.getElementById('runButton');
 graphInput.onchange = (event) => {
     const fr = new FileReader();
     const file = graphInput.files[0];
-    fr.onload = () => {
+    fr.onload = async () => {
         if (graph) {
             graph.destroy();
         }
-        graph = Graph.deserialize(JSON.parse(fr.result));
+        graph = await Graph.deserialize(JSON.parse(fr.result));
     }
     fr.readAsText(file);
 }
@@ -41,8 +41,8 @@ imageInput.onchange = () => {
  */
 runButton.onclick = () => {
     const input = graph.findIOByLabel('camera')[0];
-    const outputs = graph.findIOByLabel(/^photo_\d+$/);
-    console.log(outputs);
+    const outputs = graph.findIOByLabel(/^output_.+$/);
+    console.log(input, outputs);
     outputWrapper.innerHTML = '';
 
     for (let output of outputs) {

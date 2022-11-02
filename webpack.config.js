@@ -31,22 +31,17 @@ const config = {
   module: {
     rules: [
       {
+        test: /\.(js|ts)$/,
+        loader: 'esbuild-loader',
+        options: {
+          target: 'es2015',
+          loader: 'ts'
+        }
+      },
+      {
         test: /\.vue$/,
         loader: 'vue-loader',
       },
-      {
-        test: /\.js$/,
-        loader: 'babel-loader',
-        include: [
-          resolve('src'),
-        ],
-        options: {
-          presets: [
-            ["@babel/preset-env"]
-          ]
-        }
-      },
-
       {
         test: /\.css$/,
         use: [

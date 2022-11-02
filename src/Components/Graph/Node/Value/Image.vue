@@ -10,7 +10,7 @@
     </div>
 </template>
 <script>
-import {paintToCanvas, mediaSize} from 'graphfx/src/nodes/canvas.js'
+import {paintToCanvas, mediaSize} from 'graphfx/src/nodes/canvas'
 import _ from 'lodash';
 
 export default {
